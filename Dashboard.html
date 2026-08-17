@@ -1,0 +1,2003 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>لوحة التحكم | المصري كارز</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #18202b;
+      --muted: #77808f;
+      --line: #e7eaf0;
+      --primary: #162238;
+      --primary-2: #263958;
+      --danger: #d84646;
+      --success: #1d9b68;
+      --warning: #d89224;
+      --shadow: 0 10px 30px rgba(21, 30, 48, 0.07);
+    }
+
+    body {
+      font-family: "Tajawal", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+    }
+
+    .dashboard {
+      min-height: 100vh;
+      display: flex;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 250px;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      z-index: 30;
+    }
+
+    .sidebar-logo {
+      padding: 8px 12px 25px;
+      border-bottom: 1px solid rgba(255,255,255,.10);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo strong {
+      display: block;
+      font-family: "Cairo", sans-serif;
+      font-size: 21px;
+    }
+
+    .sidebar-logo span {
+      color: rgba(255,255,255,.65);
+      font-size: 13px;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .nav-item {
+      border: 0;
+      background: transparent;
+      color: rgba(255,255,255,.72);
+      border-radius: 12px;
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      text-align: right;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      color: white;
+      background: rgba(255,255,255,.11);
+    }
+
+    .sidebar-foot {
+      margin-top: auto;
+      padding: 16px 8px 2px;
+      color: rgba(255,255,255,.52);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.42);
+      z-index: 20;
+    }
+
+    .dashboard-main {
+      width: calc(100% - 250px);
+      margin-right: 250px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 74px;
+      background: white;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar h1 {
+      font-family: "Cairo", sans-serif;
+      font-size: 20px;
+    }
+
+    .menu-btn {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .admin-chip {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 700;
+    }
+
+    .admin-avatar {
+      width: 37px;
+      height: 37px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    .content {
+      padding: 26px;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .stat-icon {
+      flex: 0 0 45px;
+      height: 45px;
+      border-radius: 13px;
+      background: #edf1f7;
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-family: "Cairo", sans-serif;
+      font-size: 24px;
+      line-height: 1.1;
+      margin-bottom: 4px;
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .panel,
+    .table-wrap {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .panel {
+      padding: 20px;
+    }
+
+    .panel h2 {
+      font-family: "Cairo", sans-serif;
+      font-size: 17px;
+      margin-bottom: 16px;
+    }
+
+    .activity-list {
+      list-style: none;
+    }
+
+    .activity-list li {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .activity-list li:last-child {
+      border-bottom: 0;
+    }
+
+    .activity-list time {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .section-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 420px;
+    }
+
+    .search-box input {
+      width: 100%;
+      height: 44px;
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 11px;
+      padding: 0 14px 0 45px;
+      outline: none;
+    }
+
+    .search-box input:focus {
+      border-color: #aab4c6;
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 14px;
+      top: 12px;
+      color: #929aab;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-2);
+    }
+
+    .btn-ghost {
+      background: #eef1f5;
+      color: var(--text);
+    }
+
+    .btn-danger {
+      color: var(--danger);
+      background: #fff0f0;
+    }
+
+    .btn-edit {
+      color: #31598d;
+      background: #eef5ff;
+    }
+
+    .btn-star {
+      color: #9a7203;
+      background: #fff8e6;
+    }
+
+    .btn-star.active {
+      color: #1b1f2a;
+      background: var(--gold, #d4a017);
+    }
+
+    .btn-small {
+      padding: 7px 10px;
+      font-size: 13px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 650px;
+    }
+
+    th,
+    td {
+      padding: 15px 18px;
+      text-align: right;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 13px;
+      background: #fafbfc;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .car-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .car-cell > div {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .car-cell strong,
+    .car-cell small {
+      display: block;
+      overflow-wrap: break-word;
+    }
+
+    .car-image {
+      width: 58px;
+      height: 42px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #eef1f5;
+    }
+
+    .car-image-placeholder {
+      width: 58px;
+      height: 42px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #eef1f5;
+      color: #7c8797;
+      font-size: 11px;
+    }
+
+    .car-cell strong {
+      display: block;
+    }
+
+    .car-cell small {
+      color: var(--muted);
+    }
+
+    .status {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .status.available,
+    .status.active {
+      background: #e9f8f1;
+      color: var(--success);
+    }
+
+    .status.reserved {
+      background: #fff4dd;
+      color: var(--warning);
+    }
+
+    .status.sold,
+    .status.ended,
+    .status.cancelled {
+      background: #f0f1f3;
+      color: #687080;
+    }
+
+    .actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 35px !important;
+      color: var(--muted);
+    }
+
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(11,17,26,.56);
+      padding: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(620px, 100%);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: white;
+      border-radius: 17px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.22);
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-head h3 {
+      font-family: "Cairo", sans-serif;
+      font-size: 17px;
+    }
+
+    .modal-close {
+      border: 0;
+      background: #f2f4f7;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    form {
+      padding: 20px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .form-field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      height: 43px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      padding: 0 12px;
+      outline: none;
+      background: white;
+    }
+
+    .form-field textarea {
+      width: 100%;
+      min-height: 80px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      outline: none;
+      background: white;
+      font-family: inherit;
+      resize: vertical;
+    }
+
+    .images-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .form-field-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: #fbfaf7;
+    }
+
+    .form-field-checkbox input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--gold, #d4a017);
+    }
+
+    .form-field-checkbox label {
+      font-size: 13px;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .form-field-checkbox small {
+      display: block;
+      font-weight: 400;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      margin-top: 22px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 22px;
+      left: 22px;
+      z-index: 150;
+      background: #172336;
+      color: white;
+      border-radius: 11px;
+      padding: 12px 15px;
+      display: flex;
+      gap: 9px;
+      align-items: center;
+      transform: translateY(90px);
+      opacity: 0;
+      transition: .25s ease;
+      max-width: 360px;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.error {
+      background: #a63737;
+    }
+
+    @media (max-width: 1050px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 760px) {
+      .sidebar {
+        transform: translateX(100%);
+        transition: .25s ease;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.open {
+        display: block;
+      }
+
+      .dashboard-main {
+        width: 100%;
+        margin-right: 0;
+      }
+
+      .menu-btn {
+        display: inline-flex;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-toolbar {
+        flex-direction: column;
+      }
+
+      .search-box {
+        max-width: none;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-field.full {
+        grid-column: auto;
+      }
+
+      .images-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .car-cell {
+        gap: 8px;
+      }
+
+      table thead {
+        display: none;
+      }
+
+      table, table tbody, table tr, table td {
+        display: block;
+        width: 100%;
+        min-width: 0;
+      }
+
+      .table-wrap {
+        overflow-x: visible;
+      }
+
+      table tr {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        margin-bottom: 12px;
+        padding: 10px;
+      }
+
+      table td {
+        border: none !important;
+        padding: 8px 4px !important;
+      }
+
+      table td:not(:first-child)::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard">
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <strong>المصري كارز</strong>
+        <span>لوحة التحكم</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-view="overview">
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><rect x="3" y="3" width="7" height="9" rx="1"></rect><rect x="14" y="3" width="7" height="5" rx="1"></rect><rect x="14" y="12" width="7" height="9" rx="1"></rect><rect x="3" y="16" width="7" height="5" rx="1"></rect></svg>
+          نظرة عامة
+        </button>
+
+        <button class="nav-item" data-view="cars">
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M3 13l2-6a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 6"></path><rect x="2" y="13" width="20" height="6" rx="2"></rect><circle cx="7" cy="19" r="1.6"></circle><circle cx="17" cy="19" r="1.6"></circle></svg>
+          السيارات
+        </button>
+
+        <button class="nav-item" data-view="auctions">
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"></path></svg>
+          المزادات
+        </button>
+
+        <button class="nav-item" data-view="users">
+          <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          المستخدمين
+        </button>
+      </nav>
+
+      <div class="sidebar-foot">
+        البيانات محفوظة على السيرفر عبر SQLite
+      </div>
+    </aside>
+
+    <div class="dashboard-main">
+      <header class="topbar">
+        <div style="display:flex; align-items:center; gap:.8rem;">
+          <button class="menu-btn" id="menuBtn" aria-label="فتح القائمة">
+            <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <h1 id="pageTitle">نظرة عامة</h1>
+        </div>
+
+        <div class="topbar-right">
+          <div class="admin-chip">
+            <div class="admin-avatar">ح</div>
+            <span id="adminUsername">...</span>
+          </div>
+          <button class="btn btn-ghost" id="logoutBtn" type="button" style="padding:.5rem .9rem;">
+            تسجيل خروج
+          </button>
+        </div>
+      </header>
+
+      <div class="content">
+
+        <section class="view active" id="view-overview">
+          <div class="stats-grid">
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M3 13l2-6a2 2 0 0 1 2-1h10a2 2 0 0 1 2 1l2 6"></path><rect x="2" y="13" width="20" height="6" rx="2"></rect></svg>
+              </div>
+              <div>
+                <strong class="num" id="statCars">--</strong>
+                <span>سيارة معروضة</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M6 3h7l2 4h2a2 2 0 0 1 2 2v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z"></path><path d="M9 15h4"></path></svg>
+              </div>
+              <div>
+                <strong class="num" id="statGasoline">--</strong>
+                <span>سيارة بنزين</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"></path></svg>
+              </div>
+              <div>
+                <strong class="num" id="statElectric">--</strong>
+                <span>سيارة كهربائية</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon">
+                <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"></path><path d="M6 3h7l2 4h2a2 2 0 0 1 2 2v9a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" opacity="0.4"></path></svg>
+              </div>
+              <div>
+                <strong class="num" id="statHybrid">--</strong>
+                <span>سيارة هايبرد</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="panel">
+            <h2>آخر النشاطات</h2>
+            <ul class="activity-list" id="activityList">
+              <li><span>جاري تحميل النشاطات...</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="view" id="view-cars">
+          <div class="section-toolbar">
+            <div class="search-box">
+              <input type="text" id="carSearch" placeholder="دور على سيارة..." />
+              <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            </div>
+
+            <span id="featuredCounter" style="font-size:13px; font-weight:700; color:#6b7280;">⭐ مميزة: -- / 6</span>
+
+            <button class="btn btn-primary" id="addCarBtn">
+              <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"></path></svg>
+              إضافة سيارة
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>السيارة</th>
+                  <th>السعر</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="carsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view" id="view-auctions">
+          <div class="section-toolbar">
+            <div class="search-box">
+              <input type="text" id="auctionSearch" placeholder="دور على مزاد..." />
+              <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>
+            </div>
+
+            <button class="btn btn-primary" id="addAuctionBtn">
+              <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"></path></svg>
+              إضافة مزاد
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>المزاد</th>
+                  <th>أعلى مزايدة</th>
+                  <th>الوقت المتبقي</th>
+                  <th>الحالة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="auctionsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="view" id="view-users">
+          <div class="section-toolbar">
+            <p style="font-size:13px; color:#6b7280; margin:0;">
+              هيدول الأشخاص المسموحلهم يفوتوا عاللوحة. ضيفي حدا جديد وقت ما بدك.
+            </p>
+            <button class="btn btn-primary" id="addUserBtn">
+              <svg viewBox="0 0 24 24" stroke-width="2" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"></path></svg>
+              إضافة مستخدم
+            </button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>اسم المستخدم</th>
+                  <th>تاريخ الإضافة</th>
+                  <th>إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="carModalOverlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="carModalTitle">إضافة سيارة جديدة</h3>
+        <button class="modal-close" id="carModalClose" type="button">×</button>
+      </div>
+
+      <form id="carForm">
+        <div class="form-grid">
+
+          <div class="form-field full">
+            <label for="carName">اسم السيارة</label>
+            <input type="text" id="carName" required />
+          </div>
+
+          <div class="form-field">
+            <label for="carYear">سنة الصنع</label>
+            <input type="number" id="carYear" required />
+          </div>
+
+          <div class="form-field">
+            <label for="carPrice">السعر ($)</label>
+            <input type="number" id="carPrice" required />
+          </div>
+
+          <div class="form-field">
+            <label for="carKm">الممشى (كم)</label>
+            <input type="number" id="carKm" value="0" />
+          </div>
+
+          <div class="form-field">
+            <label for="carFuel">نوع الوقود</label>
+            <select id="carFuel" required>
+              <option value="بنزين">بنزين</option>
+              <option value="هايبرد">هايبرد</option>
+              <option value="كهربائية">كهربائية</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="carTransmission">ناقل الحركة</label>
+            <select id="carTransmission" required>
+              <option value="أوتوماتيك">أوتوماتيك</option>
+              <option value="يدوي">يدوي</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="carBranch">الفرع</label>
+            <select id="carBranch" required>
+              <option value="طرطوس">طرطوس</option>
+              <option value="حمص">حمص</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="carCondition">حالة السيارة</label>
+            <select id="carCondition" required>
+              <option value="مستعملة">مستعملة</option>
+              <option value="جديدة">جديدة</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label for="carStatus">حالة العرض (بيع)</label>
+            <select id="carStatus">
+              <option value="available">متاحة</option>
+              <option value="reserved">محجوزة</option>
+              <option value="sold">مباعة</option>
+            </select>
+          </div>
+
+          <div class="form-field full">
+            <label for="carDesc">وصف السيارة</label>
+            <textarea id="carDesc" placeholder="اكتب وصف قصير عن حالة السيارة، المواصفات، أو أي تفاصيل مهمة..."></textarea>
+          </div>
+
+          <div class="form-field full">
+            <label>صور السيارة (حتى 6 صور، لازم صورة وحدة عالأقل)</label>
+            <div class="images-grid">
+              <input type="text" id="carImg1" placeholder="رابط الصورة 1 (أساسية)" />
+              <input type="text" id="carImg2" placeholder="رابط الصورة 2" />
+              <input type="text" id="carImg3" placeholder="رابط الصورة 3" />
+              <input type="text" id="carImg4" placeholder="رابط الصورة 4" />
+              <input type="text" id="carImg5" placeholder="رابط الصورة 5" />
+              <input type="text" id="carImg6" placeholder="رابط الصورة 6" />
+            </div>
+          </div>
+
+          <div class="form-field full">
+            <div class="form-field-checkbox">
+              <input type="checkbox" id="carFeatured" />
+              <label for="carFeatured">
+                ⭐ عرضها ضمن السيارات المميزة هالأسبوع (الصفحة الرئيسية)
+                <small id="featuredHint">الحد الأقصى 6 سيارات مميزة بنفس الوقت</small>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="carCancelBtn">إلغاء</button>
+          <button type="submit" class="btn btn-primary">حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="auctionModalOverlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 id="auctionModalTitle">إضافة مزاد جديد</h3>
+        <button class="modal-close" id="auctionModalClose" type="button">×</button>
+      </div>
+
+      <form id="auctionForm">
+        <div class="form-grid">
+
+          <div class="form-field full">
+            <label for="auctionName">اسم السيارة</label>
+            <input type="text" id="auctionName" required />
+          </div>
+
+          <div class="form-field">
+            <label for="auctionStartPrice">السعر الابتدائي ($)</label>
+            <input type="number" id="auctionStartPrice" required />
+          </div>
+
+          <div class="form-field">
+            <label for="auctionIncrement">الحد الأدنى للزيادة ($)</label>
+            <input type="number" id="auctionIncrement" required />
+          </div>
+
+          <div class="form-field">
+            <label for="auctionDuration">مدة المزاد (ساعات)</label>
+            <input type="number" id="auctionDuration" required />
+          </div>
+
+          <div class="form-field">
+            <label for="auctionImg">رابط الصورة</label>
+            <input type="text" id="auctionImg" />
+          </div>
+
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="auctionCancelBtn">إلغاء</button>
+          <button type="submit" class="btn btn-primary">حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="userModalOverlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3>إضافة مستخدم جديد</h3>
+        <button class="modal-close" id="userModalClose" type="button">×</button>
+      </div>
+
+      <form id="userForm">
+        <div class="form-grid">
+
+          <div class="form-field full">
+            <label for="userUsername">اسم المستخدم</label>
+            <input type="text" id="userUsername" required />
+          </div>
+
+          <div class="form-field full">
+            <label for="userPassword">كلمة السر (6 أحرف عالأقل)</label>
+            <input type="password" id="userPassword" minlength="6" required />
+          </div>
+
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="userCancelBtn">إلغاء</button>
+          <button type="submit" class="btn btn-primary">حفظ</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">
+    <span id="toastMsg"></span>
+  </div>
+
+  <script>
+    // =====================================================
+    // State
+    // =====================================================
+
+    let cars = [];
+    let auctions = [];
+
+    let editingCarId = null;
+    let editingAuctionId = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    const statusLabels = {
+      available: "متاحة",
+      reserved: "محجوزة",
+      sold: "مباعة",
+      active: "نشط",
+      ended: "منتهي",
+      cancelled: "ملغي"
+    };
+
+
+    // =====================================================
+    // API helper
+    // =====================================================
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        }
+      });
+
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch (_) {}
+
+      if (!response.ok || data.success === false) {
+        throw new Error(data.error || "حدث خطأ أثناء الاتصال بالسيرفر");
+      }
+
+      return data;
+    }
+
+
+    // =====================================================
+    // Helpers
+    // =====================================================
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function money(value) {
+      const number = Number(value || 0);
+
+      return new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 0
+      }).format(number) + " $";
+    }
+
+    function showToast(message, error = false) {
+      const toast = $("toast");
+
+      $("toastMsg").textContent = message;
+
+      toast.classList.toggle("error", error);
+      toast.classList.add("show");
+
+      clearTimeout(showToast.timer);
+
+      showToast.timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2800);
+    }
+
+    function closeSidebar() {
+      $("sidebar").classList.remove("open");
+      $("sidebarOverlay").classList.remove("open");
+    }
+
+    function formatActivityDate(value) {
+      if (!value) return "";
+
+      let text = String(value);
+
+      // SQLite CURRENT_TIMESTAMP يرجع YYYY-MM-DD HH:MM:SS
+      if (!text.includes("T")) {
+        text = text.replace(" ", "T") + "Z";
+      }
+
+      const date = new Date(text);
+
+      if (Number.isNaN(date.getTime())) {
+        return value;
+      }
+
+      return date.toLocaleString("ar", {
+        dateStyle: "short",
+        timeStyle: "short"
+      });
+    }
+
+    function timeRemaining(endTime) {
+      if (!endTime) return "—";
+
+      const end = new Date(endTime);
+      const now = new Date();
+
+      let seconds = Math.floor((end - now) / 1000);
+
+      if (Number.isNaN(seconds) || seconds <= 0) {
+        return "منتهي";
+      }
+
+      const days = Math.floor(seconds / 86400);
+      seconds %= 86400;
+
+      const hours = Math.floor(seconds / 3600);
+      seconds %= 3600;
+
+      const minutes = Math.floor(seconds / 60);
+      const secs = seconds % 60;
+
+      if (days > 0) {
+        return `${days} يوم ${hours} س`;
+      }
+
+      return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    }
+
+    function imageCell(image, alt) {
+      if (!image) {
+        return `<div class="car-image-placeholder">بدون صورة</div>`;
+      }
+
+      return `
+        <img
+          class="car-image"
+          src="${escapeHtml(image)}"
+          alt="${escapeHtml(alt)}"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';"
+        >
+        <div class="car-image-placeholder" style="display:none;">تعذر التحميل</div>
+      `;
+    }
+
+
+    // =====================================================
+    // Views / Sidebar
+    // =====================================================
+
+    const viewTitles = {
+      overview: "نظرة عامة",
+      cars: "السيارات",
+      auctions: "المزادات",
+      users: "المستخدمين"
+    };
+
+    document.querySelectorAll(".nav-item").forEach((button) => {
+      button.addEventListener("click", () => {
+        const view = button.dataset.view;
+
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        document.querySelectorAll(".view").forEach((section) => {
+          section.classList.remove("active");
+        });
+
+        $("view-" + view).classList.add("active");
+        $("pageTitle").textContent = viewTitles[view];
+
+        closeSidebar();
+
+        if (view === "overview") {
+          loadOverview();
+        }
+
+        if (view === "cars") {
+          loadCars();
+        }
+
+        if (view === "auctions") {
+          loadAuctions();
+        }
+
+        if (view === "users") {
+          loadUsers();
+        }
+      });
+    });
+
+    $("menuBtn").addEventListener("click", () => {
+      $("sidebar").classList.add("open");
+      $("sidebarOverlay").classList.add("open");
+    });
+
+    $("sidebarOverlay").addEventListener("click", closeSidebar);
+
+
+    // =====================================================
+    // Dashboard
+    // =====================================================
+
+    async function loadStats() {
+      const data = await api("/api/stats");
+
+      $("statCars").textContent = data.cars ?? 0;
+      $("statGasoline").textContent = data.gasoline_count ?? 0;
+      $("statElectric").textContent = data.electric_count ?? 0;
+      $("statHybrid").textContent = data.hybrid_count ?? 0;
+    }
+
+    async function loadActivities() {
+      const data = await api("/api/activities");
+
+      const list = $("activityList");
+      const items = data.activities || [];
+
+      if (!items.length) {
+        list.innerHTML = `
+          <li>
+            <span>لا يوجد أي نشاط مسجل حتى الآن.</span>
+          </li>
+        `;
+        return;
+      }
+
+      list.innerHTML = items.map((item) => `
+        <li>
+          <span>${escapeHtml(item.message)}</span>
+          <time>${escapeHtml(formatActivityDate(item.created_at))}</time>
+        </li>
+      `).join("");
+    }
+
+    async function loadOverview() {
+      try {
+        await Promise.all([
+          loadStats(),
+          loadActivities()
+        ]);
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    }
+
+
+    // =====================================================
+    // Cars
+    // =====================================================
+
+    async function loadCars() {
+      try {
+        const data = await api("/api/cars");
+        cars = data.cars || [];
+        renderCars();
+        updateFeaturedCounter();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    }
+
+    function updateFeaturedCounter() {
+      const count = cars.filter((car) => car.featured).length;
+      $("featuredCounter").textContent = `⭐ مميزة: ${count} / 6`;
+    }
+
+    function renderCars() {
+      const query = $("carSearch").value.trim().toLowerCase();
+
+      const filtered = cars.filter((car) => {
+        const haystack = `${car.name} ${car.year} ${car.status}`.toLowerCase();
+        return haystack.includes(query);
+      });
+
+      const tbody = $("carsTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="empty">لا توجد سيارات.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((car) => `
+        <tr>
+          <td data-label="السيارة">
+            <div class="car-cell">
+              ${imageCell(car.image, car.name)}
+              <div>
+                <strong>${escapeHtml(car.name)} ${car.featured ? "⭐" : ""}</strong>
+                <small>
+                  ${escapeHtml(car.year)}
+                  •
+                  ${Number(car.km || 0).toLocaleString("en-US")} كم
+                </small>
+              </div>
+            </div>
+          </td>
+
+          <td data-label="السعر">${money(car.price)}</td>
+
+          <td data-label="الحالة">
+            <span class="status ${escapeHtml(car.status)}">
+              ${escapeHtml(statusLabels[car.status] || car.status)}
+            </span>
+          </td>
+
+          <td data-label="إجراءات">
+            <div class="actions">
+              <button
+                class="btn btn-small btn-star ${car.featured ? "active" : ""}"
+                onclick="toggleFeaturedCar(${car.id})"
+                title="${car.featured ? "شيلها من المميزة" : "ضيفها للمميزة"}"
+              >
+                ⭐
+              </button>
+
+              <button class="btn btn-small btn-edit" onclick="openEditCar(${car.id})">
+                تعديل
+              </button>
+
+              <button class="btn btn-small btn-danger" onclick="deleteCar(${car.id})">
+                حذف
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    $("carSearch").addEventListener("input", renderCars);
+
+    window.toggleFeaturedCar = async function(id) {
+      const car = cars.find((item) => Number(item.id) === Number(id));
+      if (!car) return;
+
+      try {
+        await api(`/api/cars/${id}`, {
+          method: "PUT",
+          body: JSON.stringify({ featured: !car.featured })
+        });
+
+        showToast(
+          car.featured ? "تم حذفها من المميزة" : "تمت إضافتها للمميزة"
+        );
+
+        await loadCars();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    };
+
+    function resetCarFormDefaults() {
+      $("carKm").value = "0";
+      $("carFuel").value = "بنزين";
+      $("carTransmission").value = "أوتوماتيك";
+      $("carBranch").value = "طرطوس";
+      $("carCondition").value = "مستعملة";
+      $("carStatus").value = "available";
+      $("carFeatured").checked = false;
+    }
+
+    function openCarModal() {
+      $("carModalOverlay").classList.add("open");
+    }
+
+    function closeCarModal() {
+      $("carModalOverlay").classList.remove("open");
+      $("carForm").reset();
+      resetCarFormDefaults();
+      editingCarId = null;
+    }
+
+    $("addCarBtn").addEventListener("click", () => {
+      editingCarId = null;
+
+      $("carModalTitle").textContent = "إضافة سيارة جديدة";
+      $("carForm").reset();
+      resetCarFormDefaults();
+
+      openCarModal();
+    });
+
+    $("carModalClose").addEventListener("click", closeCarModal);
+    $("carCancelBtn").addEventListener("click", closeCarModal);
+
+    $("carModalOverlay").addEventListener("click", (event) => {
+      if (event.target === $("carModalOverlay")) {
+        closeCarModal();
+      }
+    });
+
+    window.openEditCar = function(id) {
+      const car = cars.find((item) => Number(item.id) === Number(id));
+
+      if (!car) return;
+
+      editingCarId = car.id;
+
+      $("carModalTitle").textContent = "تعديل السيارة";
+      $("carName").value = car.name || "";
+      $("carYear").value = car.year || "";
+      $("carPrice").value = car.price || "";
+      $("carKm").value = car.km || 0;
+      $("carFuel").value = car.fuel || "بنزين";
+      $("carTransmission").value = car.transmission || "أوتوماتيك";
+      $("carBranch").value = car.branch || "طرطوس";
+      $("carCondition").value = car.condition || "مستعملة";
+      $("carStatus").value = car.status || "available";
+      $("carDesc").value = car.description || "";
+      $("carFeatured").checked = !!car.featured;
+
+      const images = Array.isArray(car.images) ? car.images : [];
+      for (let i = 0; i < 6; i++) {
+        $(`carImg${i + 1}`).value = images[i] || "";
+      }
+      // لو ما في صور محفوظة أصلاً بس في صورة غلاف قديمة، منحطها بالحقل الأول
+      if (!images.length && car.image) {
+        $("carImg1").value = car.image;
+      }
+
+      openCarModal();
+    };
+
+    $("carForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const images = [1, 2, 3, 4, 5, 6]
+        .map((n) => $(`carImg${n}`).value.trim())
+        .filter(Boolean);
+
+      if (!images.length) {
+        showToast("لازم تحط صورة وحدة عالأقل", true);
+        return;
+      }
+
+      const payload = {
+        name: $("carName").value.trim(),
+        year: Number($("carYear").value),
+        price: Number($("carPrice").value),
+        km: Number($("carKm").value || 0),
+        fuel: $("carFuel").value,
+        transmission: $("carTransmission").value,
+        branch: $("carBranch").value,
+        condition: $("carCondition").value,
+        status: $("carStatus").value,
+        description: $("carDesc").value.trim(),
+        images,
+        featured: $("carFeatured").checked
+      };
+
+      try {
+        if (editingCarId) {
+          await api(`/api/cars/${editingCarId}`, {
+            method: "PUT",
+            body: JSON.stringify(payload)
+          });
+
+          showToast("تم تعديل السيارة بنجاح");
+        } else {
+          await api("/api/cars", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          });
+
+          showToast("تمت إضافة السيارة بنجاح");
+        }
+
+        closeCarModal();
+
+        await Promise.all([
+          loadCars(),
+          loadStats(),
+          loadActivities()
+        ]);
+
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    window.deleteCar = async function(id) {
+      const car = cars.find((item) => Number(item.id) === Number(id));
+
+      if (!car) return;
+
+      if (!confirm(`هل تريد حذف السيارة "${car.name}"؟`)) {
+        return;
+      }
+
+      try {
+        await api(`/api/cars/${id}`, {
+          method: "DELETE"
+        });
+
+        showToast("تم حذف السيارة");
+
+        await Promise.all([
+          loadCars(),
+          loadStats(),
+          loadActivities()
+        ]);
+
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    };
+
+
+    // =====================================================
+    // Auctions
+    // =====================================================
+
+    async function loadAuctions() {
+      try {
+        const data = await api("/api/auctions");
+        auctions = data.auctions || [];
+        renderAuctions();
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    }
+
+    function renderAuctions() {
+      const query = $("auctionSearch").value.trim().toLowerCase();
+
+      const filtered = auctions.filter((auction) => {
+        const haystack = `${auction.name} ${auction.status}`.toLowerCase();
+        return haystack.includes(query);
+      });
+
+      const tbody = $("auctionsTableBody");
+
+      if (!filtered.length) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty">لا توجد مزادات.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((auction) => `
+        <tr>
+          <td data-label="المزاد">
+            <div class="car-cell">
+              ${imageCell(auction.image, auction.name)}
+              <div>
+                <strong>${escapeHtml(auction.name)}</strong>
+                <small>
+                  بداية: ${money(auction.start_price)}
+                  •
+                  زيادة: ${money(auction.increment)}
+                </small>
+              </div>
+            </div>
+          </td>
+
+          <td data-label="أعلى مزايدة">${money(auction.current_bid)}</td>
+
+          <td data-label="الوقت المتبقي">
+            <span class="auction-countdown" data-end="${escapeHtml(auction.end_time)}">
+              ${escapeHtml(timeRemaining(auction.end_time))}
+            </span>
+          </td>
+
+          <td data-label="الحالة">
+            <span class="status ${escapeHtml(auction.status)}">
+              ${escapeHtml(statusLabels[auction.status] || auction.status)}
+            </span>
+          </td>
+
+          <td data-label="إجراءات">
+            <div class="actions">
+              <button class="btn btn-small btn-edit" onclick="openEditAuction(${auction.id})">
+                تعديل
+              </button>
+
+              <button class="btn btn-small btn-danger" onclick="deleteAuction(${auction.id})">
+                حذف
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    $("auctionSearch").addEventListener("input", renderAuctions);
+
+    function openAuctionModal() {
+      $("auctionModalOverlay").classList.add("open");
+    }
+
+    function closeAuctionModal() {
+      $("auctionModalOverlay").classList.remove("open");
+      $("auctionForm").reset();
+      editingAuctionId = null;
+    }
+
+    $("addAuctionBtn").addEventListener("click", () => {
+      editingAuctionId = null;
+
+      $("auctionModalTitle").textContent = "إضافة مزاد جديد";
+      $("auctionForm").reset();
+
+      openAuctionModal();
+    });
+
+    $("auctionModalClose").addEventListener("click", closeAuctionModal);
+    $("auctionCancelBtn").addEventListener("click", closeAuctionModal);
+
+    $("auctionModalOverlay").addEventListener("click", (event) => {
+      if (event.target === $("auctionModalOverlay")) {
+        closeAuctionModal();
+      }
+    });
+
+    window.openEditAuction = function(id) {
+      const auction = auctions.find((item) => Number(item.id) === Number(id));
+
+      if (!auction) return;
+
+      editingAuctionId = auction.id;
+
+      $("auctionModalTitle").textContent = "تعديل المزاد";
+      $("auctionName").value = auction.name || "";
+      $("auctionStartPrice").value = auction.start_price || "";
+      $("auctionIncrement").value = auction.increment || "";
+      $("auctionImg").value = auction.image || "";
+
+      const remainingMs = new Date(auction.end_time) - new Date();
+      const remainingHours = Math.max(1, Math.ceil(remainingMs / 3600000));
+
+      $("auctionDuration").value = remainingHours;
+
+      openAuctionModal();
+    };
+
+    $("auctionForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const payload = {
+        name: $("auctionName").value.trim(),
+        start_price: Number($("auctionStartPrice").value),
+        increment: Number($("auctionIncrement").value),
+        duration: Number($("auctionDuration").value),
+        image: $("auctionImg").value.trim()
+      };
+
+      try {
+        if (editingAuctionId) {
+          await api(`/api/auctions/${editingAuctionId}`, {
+            method: "PUT",
+            body: JSON.stringify(payload)
+          });
+
+          showToast("تم تعديل المزاد بنجاح");
+        } else {
+          await api("/api/auctions", {
+            method: "POST",
+            body: JSON.stringify(payload)
+          });
+
+          showToast("تم إنشاء المزاد بنجاح");
+        }
+
+        closeAuctionModal();
+
+        await Promise.all([
+          loadAuctions(),
+          loadStats(),
+          loadActivities()
+        ]);
+
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    window.deleteAuction = async function(id) {
+      const auction = auctions.find((item) => Number(item.id) === Number(id));
+
+      if (!auction) return;
+
+      if (!confirm(`هل تريد حذف المزاد "${auction.name}"؟`)) {
+        return;
+      }
+
+      try {
+        await api(`/api/auctions/${id}`, {
+          method: "DELETE"
+        });
+
+        showToast("تم حذف المزاد");
+
+        await Promise.all([
+          loadAuctions(),
+          loadStats(),
+          loadActivities()
+        ]);
+
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    };
+
+
+    // =====================================================
+    // المستخدمين (مين فيه يفوت عاللوحة)
+    // =====================================================
+
+    async function loadUsers() {
+      try {
+        const data = await api("/api/users");
+        const users = data.users || [];
+
+        $("usersTableBody").innerHTML = users.map((u) => `
+          <tr>
+            <td data-label="اسم المستخدم">${u.username}</td>
+            <td data-label="تاريخ الإضافة">${new Date(u.created_at).toLocaleDateString("ar")}</td>
+            <td data-label="إجراءات">
+              <button class="btn btn-small btn-danger" onclick="deleteUser(${u.id})">
+                حذف
+              </button>
+            </td>
+          </tr>
+        `).join("");
+
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    }
+
+    function openUserModal() {
+      $("userForm").reset();
+      $("userModalOverlay").classList.add("open");
+    }
+
+    function closeUserModal() {
+      $("userModalOverlay").classList.remove("open");
+      $("userForm").reset();
+    }
+
+    $("addUserBtn").addEventListener("click", openUserModal);
+    $("userModalClose").addEventListener("click", closeUserModal);
+    $("userCancelBtn").addEventListener("click", closeUserModal);
+    $("userModalOverlay").addEventListener("click", (event) => {
+      if (event.target === $("userModalOverlay")) {
+        closeUserModal();
+      }
+    });
+
+    $("userForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      try {
+        await api("/api/users", {
+          method: "POST",
+          body: JSON.stringify({
+            username: $("userUsername").value.trim(),
+            password: $("userPassword").value
+          })
+        });
+
+        showToast("تمت إضافة المستخدم بنجاح");
+        closeUserModal();
+        await loadUsers();
+
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+
+    window.deleteUser = async function(id) {
+      if (!confirm("هل تريدين حذف هذا المستخدم؟ رح يفقد صلاحية الدخول عاللوحة فورًا.")) {
+        return;
+      }
+
+      try {
+        await api(`/api/users/${id}`, {
+          method: "DELETE"
+        });
+
+        showToast("تم حذف المستخدم");
+        await loadUsers();
+
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    };
+
+
+    // =====================================================
+    // تسجيل الخروج
+    // =====================================================
+
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", async () => {
+        if (!confirm("هل تريدين تسجيل الخروج؟")) return;
+        try {
+          await fetch("/api/logout", { method: "POST" });
+        } finally {
+          window.location.href = "Login.html";
+        }
+      });
+    }
+
+
+    // =====================================================
+    // Timers / Auto refresh
+    // =====================================================
+
+    setInterval(() => {
+      document.querySelectorAll(".auction-countdown").forEach((element) => {
+        element.textContent = timeRemaining(element.dataset.end);
+      });
+    }, 1000);
+
+    setInterval(async () => {
+      try {
+        await loadStats();
+
+        if ($("view-overview").classList.contains("active")) {
+          await loadActivities();
+        }
+
+        if ($("view-auctions").classList.contains("active")) {
+          await loadAuctions();
+        }
+      } catch (_) {}
+    }, 15000);
+
+
+    // =====================================================
+    // First load
+    // =====================================================
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      try {
+        const me = await fetch("/api/me").then((r) => r.json());
+        if (me.logged_in) {
+          $("adminUsername").textContent = me.username;
+        }
+      } catch (_) {}
+
+      try {
+        await Promise.all([
+          loadStats(),
+          loadActivities(),
+          loadCars(),
+          loadAuctions()
+        ]);
+      } catch (error) {
+        showToast(
+          "تعذر الاتصال بالباك إند. تأكد أنك فتحت الموقع من Flask وليس مباشرة من الملف.",
+          true
+        );
+      }
+    });
+  </script>
+</body>
+</html>

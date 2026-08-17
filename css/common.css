@@ -1,0 +1,390 @@
+/* ============================================
+نظام الألوان والخطوط (Design Tokens)
+نفس هوية المصري كارز: كحلي + ذهبي
+ + لون تنبيه "urgent" خاص بصفحة المزادات فقط
+============================================ */
+:root {
+  --navy: #1b1f2a;
+  --navy-light: #262b3a;
+  --gold: #d4a017;
+  --gold-soft: #f0c74e;
+  --cream: #f8f6f1;
+  --ink: #1e2128;
+  --slate: #6b7280;
+  --white: #ffffff;
+  --line: #e7e3da;
+  --urgent: #e2472b;
+  --urgent-soft: #fbe4e0;
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(27, 31, 42, 0.08);
+  --shadow-hover: 0 20px 40px rgba(27, 31, 42, 0.16);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Tajawal", sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Cairo", sans-serif;
+}
+
+.num {
+  font-family: "Inter", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+/* ============================================
+Header / Navbar (مطابق لصفحة السيارات)
+=========================================== */
+.site-header {
+  background: var(--navy);
+  padding: 1.1rem 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.logo strong {
+  font-family: "Cairo", sans-serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.logo span {
+  font-family: "Inter", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: #b9bcc4;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.2rem;
+}
+
+.nav-links a {
+  color: #d5d7de;
+  font-weight: 600;
+  font-size: 0.95rem;
+  position: relative;
+  padding: 0.3rem 0;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  color: var(--gold);
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  right: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.25s ease;
+}
+
+.nav-links a[aria-current="page"]::after {
+  width: 100%;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  padding: 8px;
+}
+
+.nav-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: var(--gold);
+  border-radius: 2px;
+  transition:
+    transform 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.nav-toggle.open span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.nav-toggle.open span:nth-child(2) {
+  opacity: 0;
+}
+.nav-toggle.open span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 768px) {
+  .nav-toggle {
+    display: flex;
+  }
+  .nav-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    flex-direction: column;
+    gap: 0;
+    background: var(--navy);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+  }
+  .nav-links.open {
+    max-height: 20rem;
+  }
+  .nav-links a {
+    padding: 1rem 5%;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .nav-links a::after {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .logo strong {
+    font-size: 1.3rem;
+  }
+}
+/* ============================================
+ Footer (مطابق لصفحة السيارات)
+============================================ */
+.site-footer {
+  background: var(--navy);
+  color: #b9bcc4;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 3rem 5% 2rem;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 2.5rem;
+}
+
+.footer-brand strong {
+  font-family: "Cairo", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--gold);
+  display: block;
+}
+
+.footer-brand > span {
+  font-family: "Inter", sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: #b9bcc4;
+  text-transform: uppercase;
+}
+
+.footer-brand p {
+  margin-top: 1rem;
+  font-size: 0.88rem;
+  line-height: 1.9;
+  color: #9a9dab;
+  max-width: 26rem;
+}
+
+.footer-col h4 {
+  font-family: "Cairo", sans-serif;
+  color: var(--white);
+  font-size: 1rem;
+  margin-bottom: 1.1rem;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-col h4::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  right: 0;
+  width: 2.2rem;
+  height: 2px;
+  background: var(--gold);
+}
+
+.footer-phones {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.footer-phones a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.92rem;
+  color: #d5d7de;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+  direction: ltr;
+}
+
+.footer-phones a svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--gold);
+  flex-shrink: 0;
+}
+
+.footer-phones a:hover {
+  color: var(--gold-soft);
+  transform: translateX(4px);
+}
+
+.footer-socials {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.social-btn {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.08);
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.social-btn svg {
+  width: 19px;
+  height: 19px;
+  fill: var(--white);
+}
+
+.social-btn:hover {
+  transform: translateY(-4px) scale(1.08);
+}
+
+.social-btn.facebook:hover {
+  background: #1877f2;
+  box-shadow: 0 8px 18px rgba(24, 119, 242, 0.4);
+}
+
+.social-btn.instagram:hover {
+  background: radial-gradient(
+    circle at 30% 110%,
+    #fdf497 0%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  box-shadow: 0 8px 18px rgba(214, 36, 159, 0.4);
+}
+
+.social-btn.whatsapp:hover {
+  background: #25d366;
+  box-shadow: 0 8px 18px rgba(37, 211, 102, 0.4);
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  padding: 1.3rem 1rem;
+  font-family: "Inter", sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: #9a9dab;
+}
+
+@media (max-width: 900px) {
+  .footer-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .footer-inner {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 2rem;
+  }
+  .footer-brand p {
+    margin-inline: auto;
+  }
+  .footer-col h4::after {
+    right: 50%;
+    transform: translateX(50%);
+  }
+  .footer-phones a {
+    justify-content: center;
+  }
+  .footer-socials {
+    justify-content: center;
+  }
+}
