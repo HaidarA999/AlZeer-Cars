@@ -2056,7 +2056,7 @@
       const logoutBtn = document.getElementById("logoutBtn");
       if (logoutBtn) {
         logoutBtn.addEventListener("click", async () => {
-          if (!confirm("هل تريدين تسجيل الخروج؟")) return;
+          if (!confirm("هل تريد تسجيل الخروج؟")) return;
           try {
             await fetch("/api/logout", { method: "POST" });
           } finally {
