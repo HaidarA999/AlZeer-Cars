@@ -24,7 +24,7 @@ DB_PATH = os.path.join(BASE_DIR, "database.db")
 # (لو ما كان في مستخدمين أصلاً). بعدين تقدري تغيري كلمة السر
 # أو تضيفي مستخدمين جداد من لوحة التحكم نفسها.
 DEFAULT_ADMIN_USERNAME = "haidara"
-DEFAULT_ADMIN_PASSWORD = "AlmasreCars2026"
+DEFAULT_ADMIN_PASSWORD = "AlMasre2026"
 
 
 # =========================================================
