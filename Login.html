@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>تسجيل الدخول | لوحة تحكم المصري كارز</title>
+    <title>تسجيل الدخول | لوحة تحكم الزير كارز</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,11 +17,11 @@
   <body>
     <div class="login-card">
       <div class="login-logo">
-        <strong>المصري كارز</strong>
+        <strong>الزير كارز</strong>
         <span>لوحة التحكم</span>
       </div>
       <h1>تسجيل دخول الإدارة</h1>
-      <p>هاي الصفحة للإدارة بس — ما تشاركها مع حدا</p>
+      <p>صفحة للادارة فقط - لا تشاركها مع احد</p>
 
       <div class="error-msg" id="errorMsg">اسم المستخدم أو كلمة السر غلط.</div>
 
@@ -32,14 +32,19 @@
         </div>
         <div class="form-field">
           <label for="password">كلمة السر</label>
-          <input type="password" id="password" required autocomplete="current-password" />
+          <input
+            type="password"
+            id="password"
+            required
+            autocomplete="current-password"
+          />
         </div>
         <button type="submit" class="login-btn">دخول</button>
       </form>
 
       <div class="login-note">
-        محمية من طرف السيرفر — ما فيها حدا يفوت عاللوحة أو يعدّل بيانات
-        من دون ما يسجل دخول بحساب مسموحله.
+        محمية من طرف السيرفر — ما فيها حدا يفوت عاللوحة أو يعدّل بيانات من دون
+        ما يسجل دخول بحساب مسموحله.
       </div>
     </div>
     <script src="js/login.js"></script>

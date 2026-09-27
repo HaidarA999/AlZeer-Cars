@@ -9,7 +9,7 @@ import os
 
 app = Flask(__name__)
 
-# مفتاح تشفير الجلسات (الـ session). بالإنتاج (production) لازم تحطي
+# مفتاح تشفير الجلسات (الـ session). بالإنتاج (production) لازم تحط
 # متغير بيئة SECRET_KEY ثابت، لأنه لو ما ثبتناه، كل ما يعاد تشغيل
 # السيرفر بيتغير المفتاح وبينفصل كل المسجلين دخول.
 app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(32))
@@ -21,8 +21,8 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "database.db")
 
 # بيانات الأدمن الافتراضي، بتنزرع بقاعدة البيانات أول مرة بس
-# (لو ما كان في مستخدمين أصلاً). بعدين تقدري تغيري كلمة السر
-# أو تضيفي مستخدمين جداد من لوحة التحكم نفسها.
+# (لو ما كان في مستخدمين أصلاً). بعدين تقدر تغير كلمة السر
+# أو تضيف مستخدمين جداد من لوحة التحكم نفسها.
 DEFAULT_ADMIN_USERNAME = "haidara"
 DEFAULT_ADMIN_PASSWORD = "AlMasre2026"
 
